@@ -1,0 +1,11 @@
+.card_consulter_offre {
+    width: 350px;
+    height: 480px;
+    
+    border-radius: 15px;
+    margin-left: 10px;
+}
+
+body {
+    background: #eee
+}

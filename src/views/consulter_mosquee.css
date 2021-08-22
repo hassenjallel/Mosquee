@@ -1,0 +1,11 @@
+.card_consulter_mosquee {
+    width: 350px;
+    height: 380px;
+    
+    border-radius: 12px;
+    margin-left: 10px;
+}
+
+body {
+    background: #eee
+}
