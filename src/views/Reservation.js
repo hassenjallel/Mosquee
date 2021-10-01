@@ -9,13 +9,20 @@ import {
     Table,
     Row,
     Col,
+    Input
   } from "reactstrap";
-const Reservation = (props) => {
+  import GetCookie from "./cookies";
+  import { useHistory } from "react-router-dom";
 
+const Reservation = (props) => {
+  const history = useHistory();
+  const [search , setSerach]=useState('')
 
     let list = props.location.state.condidats;
  
-
+    const filtredCondidat = list.filter(listCondidat=>{
+      return listCondidat.nom_condidat.toLowerCase().includes(search.toLowerCase())
+    })
     return (
         <>
             <div className="content">
@@ -24,6 +31,8 @@ const Reservation = (props) => {
             <Card>
               <CardHeader>
               <center>  <CardTitle tag="h4">All Reservation</CardTitle>  </center>
+              <center><Input onChange={e=>setSerach(e.target.value)} placeholder="chercher avec nom" style={{width:"300px"}}/></center>
+
               </CardHeader>
               <CardBody>
                 <Table responsive>
@@ -37,7 +46,7 @@ const Reservation = (props) => {
 
                     </tr>
                   </thead>
-                  {list.map((item) =>
+                  {filtredCondidat.map((item) =>
                   <tbody>
                     <tr>
                       <td>{item.nom_condidat}</td>

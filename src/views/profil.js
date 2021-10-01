@@ -33,11 +33,13 @@ import {
     Col,
 } from "reactstrap";
 import axios from 'axios';
+import GetCookie from "./cookies";
 import { useHistory } from "react-router-dom";
 
 function User() {
-    
     const history = useHistory();
+  
+   
     let type = localStorage.getItem("type")
     function goToEditprofil() {
         history.push({
@@ -94,7 +96,7 @@ function User() {
                                                     id="mot_de_passe"
                                                     value={localStorage.getItem("mot_de_passe")}
 
-                                                    type="text"
+                                                    type="password"
                                                 />
                                             </FormGroup>
                                         </Col>
@@ -178,7 +180,7 @@ function User() {
                                                 type="submit"
                                                 onClick={goToEditprofil}
                                             >
-                                                update
+                                                modifier
                                             </Button>
                                         </div>
 

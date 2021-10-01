@@ -44,8 +44,11 @@ import {
 } from "variables/charts.js";
 import { useHistory } from "react-router-dom";
 import "./consulter_mosquee.css"
+import GetCookie from "./cookies";
 function Consulter_all_mosquee() {
+    const history = useHistory();
 
+  
     let type = localStorage.getItem("type");
     let [allville, setAllville] = useState([]);
     let [allmosquee, setAllmosquee] = useState([]);
@@ -53,10 +56,9 @@ function Consulter_all_mosquee() {
     let [displayMosqueList, setDisplayMosqueList] = useState(false);
     useEffect(() => {
         const get_all_ville_mosquee = async () => {
-            axios.get("http://localhost:5000/Admin/all_ville").then(resp => {
-
+            axios.get("http://localhost:5000/Admin/all/villes").then(resp => {
                 setAllville(resp.data)
-
+            console.log(resp.data)
             }).catch(err => {
                 console.log(err);
             })
@@ -68,7 +70,6 @@ function Consulter_all_mosquee() {
     );
 
 
-    const history = useHistory();
 
 
 
@@ -116,39 +117,48 @@ function Consulter_all_mosquee() {
             </Row>
 
             {displayMosqueList && (
-                <Row>
+                    <div className="container-fluid d-flex justify-content-center">
+                    <div className="row mt-5">
                     {allmosquee.map((item) =>
-                        <Row>
-                            <Col md="12" xs="5">
-                                <div className="d-flex justify-content-center container mt-5">
-                                    <div className="card_consulter_mosquee p-3 bg-white"><i className="fa fa-apple"></i>
-                                        <div className="about-product text-center mt-2"><img src={item.pictureName} width="300" />
-                                            <div>
-                                                <h4>{item.nom_mosquee}</h4>
-                                                <h6 className="mt-0 text-black-50">{item.ville}</h6>
-                                            </div>
-                                        </div>
-                                        <div className="stats mt-2">
-                                            <div className="d-flex justify-content-between p-price"><span>email</span><span>{item.email}</span></div>
-                                            <div className="d-flex justify-content-between p-price"><span>numero d'imem</span><span>{item.numero_telephone}</span></div>
-                                            <div className="d-flex justify-content-between p-price"><span>verifier</span><span>{item.verifier}</span></div>
-                                        </div>
-                                        <center>
-                                            <div className=" mt-4"><span> <Button
-                                                className="btn-round"
-                                                style={{ backgroundColor: "#f44336" }}
-                                                type="submit"
-                                                onClick={() => mosqueeDetails(item)}
-                                            >
-                                                detaile
-                                            </Button></span></div></center>
-                                    </div>
-                                </div>
-                            </Col>
-                        </Row>
+                      <Row>
+                        <Col md="12">
+                      <div className="d-flex justify-content-center container mt-5">
+                      <div className="card_consulter_cours p-3 bg-white"><i className="fa fa-apple"></i>
+                        <div className="about-product text-center mt-2"><img src={item.pictureName} width="300" height="200" />
+                          <div>
+                            <h4>{item.nom_mosquee}</h4>
+        
+                          </div>
+                        </div>
+                        <div className="stats mt-2">
+                          <div className="d-flex justify-content-between p-price"><span>email</span><span>{item.email}</span></div>
+                          <div className="d-flex justify-content-between p-price"><span>numero d'imem</span><span>{item.numero_telephone}</span></div>
+                          <div className="d-flex justify-content-between p-price"><span>verifier</span><span>{item.verifier}</span></div>
+
+        
+        
+                        </div>
+                        
+                        <center>
+                          <div className="mt-4"><span> <Button
+                            className="btn-round"
+                            style={{ backgroundColor: "#f44336" }}
+                            type="submit"
+                            onClick={()=>mosqueeDetails(item)}
+                          >
+                            détails
+                          </Button></span></div></center>
+                      </div>
+                    </div>
+                    </Col>
+                    </Row>
                     )}
-                </Row>
-            )}
+                 
+                      </div>
+                      </div>
+                )}
+        
+              
 
 
         </>

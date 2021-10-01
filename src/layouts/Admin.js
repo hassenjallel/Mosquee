@@ -25,11 +25,21 @@ import axios from 'axios';
 import DemoNavbar from "components/Navbars/DemoNavbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
-import routes from "routes.js";
-
+import routesAdmin from "routes.js";
+import routesSuperAdmin from "../routesSuperAdmin";
+import { useHistory } from "react-router-dom";
+import GetCookie from "views/cookies";
 var ps;
 
 function Dashboard(props) {
+  const history =useHistory();
+  let nom="mosquee"
+  let cook = GetCookie(nom)
+  if(cook.length==0){
+    history.push({
+      pathname:'/login'
+    })
+  }
   const [backgroundColor, setBackgroundColor] = React.useState("black");
   const [activeColor, setActiveColor] = React.useState("info");
  
@@ -58,20 +68,20 @@ function Dashboard(props) {
   };
   const handleBgClick = (color) => {
     setBackgroundColor(color);
-  };
- 
+  };    
+ if (localStorage.getItem('type')==="admin"){
   return (
     <div className="wrapper">
       <Sidebar
         {...props}
-        routes={routes}
+        routes={routesAdmin}
         bgColor={backgroundColor}
         activeColor={activeColor}
       />
       <div className="main-panel" ref={mainPanel}>
         <DemoNavbar {...props} />
         <Switch>
-          {routes.map((prop, key) => {
+          {routesAdmin.map((prop, key) => {
            
             return (
               <Route
@@ -87,6 +97,35 @@ function Dashboard(props) {
    
     </div>
   );
+        }else{
+          return (
+            <div className="wrapper">
+              <Sidebar
+                {...props}
+                routes={routesSuperAdmin}
+                bgColor={backgroundColor}
+                activeColor={activeColor}
+              />
+              <div className="main-panel" ref={mainPanel}>
+                <DemoNavbar {...props} />
+                <Switch>
+                  {routesSuperAdmin.map((prop, key) => {
+                   
+                    return (
+                      <Route
+                        path={prop.layout + prop.path}
+                        component={prop.component}
+                        key={key}
+                      />
+                    );
+                  })}
+                </Switch>
+                
+              </div>
+           
+            </div>
+          );
+        }
 }
 
 export default Dashboard;

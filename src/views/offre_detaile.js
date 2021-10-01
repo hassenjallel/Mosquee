@@ -34,7 +34,7 @@ import axios from 'axios';
 import { useHistory } from "react-router-dom";
 import "./offre_detaile.css"
 // core components
-
+import GetCookie from "./cookies";
 
 function Offre_details(props) {
 
@@ -42,6 +42,7 @@ function Offre_details(props) {
   console.log("props.location.state")
 
   const history = useHistory();
+ 
   console.log(props.location.state)
   let offer = props.location.state;
   let nbr_condidats = offer.condidats.length
@@ -54,37 +55,48 @@ function Offre_details(props) {
   }
   const deleteOffre = () => {
     console.log(offer.condidats)
-    offer.condidats.map((item) =>
-
+    var r = window.confirm("Etes vous sur de vouloir supprimer!");
+    console.log(r)
+    if (r == true) {
+    offer.condidats.map((item) => 
 
       axios.post("http://localhost:5000/offre/sendemail/" + item.email_condidat + "/" + item.nom_condidat).then(resp => {
         console.log("les emails est bien envoye")
       }).catch(err => {
         console.log(err);
       }),
-      console.log("dkhal lel fonction map")
+        console.log("dkhal lel fonction map")
     )
 
-    axios.delete("http://localhost:5000/cours/" + offer.nom_offre).then(resp => {
-      console.log("le cours  a ete supprimer");
+    axios.delete("http://localhost:5000/offre/" + offer.nom_offre).then(resp => {
+      console.log("l'offre a ete supprimer");
     }).catch(err => {
       console.log(err);
     })
 
 
     history.push({
-      pathname: '/admin/consulter_cours',
+      pathname: '/admin/consulter_offres',
       state: offer // your data array of objects
     });
 
+    }
 
-
+  }
+  async function goToUpdateOffre() {
+    history.push({
+      pathname: '/admin/Modifier_offre',
+      state: offer
+    });
   }
   return (
     <>
-    <center><h4>offre detaile</h4></center>
+      <center><h4>offre detaille</h4></center>
       <div className="d-flex justify-content-center container mt-5">
         <div className="card_offre_detaile p-3 bg-white"><i className="fa fa-apple"></i>
+          <div className="float-right">
+            <i className="nc-icon nc-settings-gear-65  " onClick={goToUpdateOffre} />
+          </div>
           <div className="about-product text-center mt-2"><img src={offer.pictureName} width="600" />
             <div>
               <h4>{offer.nom_mosquee}</h4>
@@ -92,18 +104,18 @@ function Offre_details(props) {
             </div>
           </div>
           <div className="stats mt-2">
-            <div className="d-flex justify-content-between p-price"><span>nom offre</span><span>{offer.nom_offre}</span></div>
-           
-            <div className="d-flex justify-content-between p-price"><span>date debut</span><span>{offer.date_debut}</span></div>
-            <div className="d-flex justify-content-between p-price"><span>date fin</span><span>{offer.date_fin}</span></div>
-            <div className="d-flex justify-content-between p-price"><span>mail admin</span><span>{offer.mail_admin}</span></div>
+            <div className="d-flex justify-content-between p-price"><span>nom d'offre</span><span>{offer.nom_offre}</span></div>
+
+            <div className="d-flex justify-content-between p-price"><span>date de départ</span><span>{offer.date_debut}</span></div>
+            <div className="d-flex justify-content-between p-price"><span> date d'arrivée</span><span>{offer.date_fin}</span></div>
+            <div className="d-flex justify-content-between p-price"><span> e-mail de l'administrateur</span><span>{offer.mail_admin}</span></div>
             <div className="d-flex justify-content-between p-price"><span>description :</span><span>{offer.description}</span></div>
 
 
           </div>
           <div className="d-flex justify-content-between total font-weight-bold mt-4"><span>  {nbr_condidats > 0 && <Button
             className="btn-round"
-          
+
             type="submit"
             onClick={goToReservation}
           >
@@ -125,7 +137,7 @@ function Offre_details(props) {
         </div>
       </div>
 
-    
+
     </>
   );
 }

@@ -35,20 +35,22 @@ import {
 import axios from 'axios';
 import { useHistory } from "react-router-dom";
 
+import GetCookie from "./cookies";
+const Update_mosquee = (props) => {
+  const history = useHistory();
 
-const  Update_mosquee = (props) => {
-    let mosquee = props.location.state;
-    let activer ;
-    let desactiver ;
-    if(mosquee.verifier==="true")
-    {
-        desactiver=true;
-        activer=false
-    }else{
-        activer=true;
-        desactiver=false
-    }
-  let mosqueepicture="null";
+
+  let mosquee = props.location.state;
+  let activer;
+  let desactiver;
+  if (mosquee.verifier === "true") {
+    desactiver = true;
+    activer = false
+  } else {
+    activer = true;
+    desactiver = false
+  }
+  let mosqueepicture = "null";
 
   function fileselect(event) {
 
@@ -57,93 +59,100 @@ const  Update_mosquee = (props) => {
     let reader = new FileReader();
     reader.readAsDataURL(fileList[0]);
     reader.onload = (event) => {
-        
-       
-            
-        mosqueepicture = event.target.result;
-        
+
+
+
+      mosqueepicture = event.target.result;
+console.log(mosqueepicture)
 
     }
 
 
 
-}
-  const history = useHistory();
-  const villes = ['Paris', 'Nice', 'Bordeaux', 'Lyon', 'Marseille', 'Toulouse', 'Lille', 'Nantes', 'Strasbourg', 'Monpellier',
-    'Rennes', 'Angers', 'Dijon', 'Grenoble', 'Saint-Etienne', 'Brest', 'Le Havre', 'Reims', 'Caen', 'Metz'
-    , 'Toulon', 'Aix-en-Provence', 'Nimes', 'Tours', 'Nancy', 'Rouen', 'Clermont-Ferrand', 'Le Mans',
-    'Besancon', 'Avignon', 'La Rochelle', 'Poitiers', 'Mulhouse', 'Limoges', 'Orleans', 'Annecy', 'Perpignan',
-    'Amiens', 'Creteil', 'Pau', 'Saint-Denis', 'Dunkerque', 'Bayonne', 'Chambery', 'Villeurbanne', 'Montreuil',
-    'Lorient', 'Aubervilliers', 'Roubaix', 'Vitry-Sur-Seine', 'Tourcoing']
-  function update_mosquee() {
-    let request = {
-      pseudo: document.getElementById("pseudo").value,
-      email: document.getElementById("email").value,
-      mot_de_passe: document.getElementById("mot_de_passe").value,
-     
-      nom_mosquee: document.getElementById("nom_mosquee").value,
-      nom: document.getElementById("nom_admin").value,
-      prenom: document.getElementById("prenom").value,
-      cin: document.getElementById("cin").value,
-    
-      numero_telephone :document.getElementById("numero").value,
+  }
+
+  function update_mosquee(e) {
+
+    e.preventDefault();
+    var r = window.confirm("Etes vous sur de vouloir Modifier");
+    console.log(r)
+    if (r == true) {
+      if (mosqueepicture === "null") {
+
+        mosqueepicture = mosquee.pictureName;
     }
-   
-    axios.put("http://localhost:5000/Admin/super_admin/mosque/"+mosquee.pseudo, request).then(resp => {
+      let request = {
+        pseudo: document.getElementById("pseudo").value,
+        email: document.getElementById("email").value,
+        mot_de_passe: document.getElementById("mot_de_passe").value,
+        pictureName: mosqueepicture,
+
+        nom_mosquee: document.getElementById("nom_mosquee").value,
+        nom: document.getElementById("nom_admin").value,
+        prenom: document.getElementById("prenom").value,
+        cin: document.getElementById("cin").value,
+
+        numero_telephone: document.getElementById("numero").value,
+      }
+
+      axios.put("http://localhost:5000/Admin/super_admin/mosque/" + mosquee.pseudo, request).then(resp => {
+        history.push({
+          pathname: '/admin/consulter_mosquee',
+
+        });
+      }).catch(err => {
+        console.log(err);
+      })
+
+
+
+    };
+  }
+
+  async function banMosquee(e) {
+    e.preventDefault();
+
+
+    axios.put("http://localhost:5000/Admin/ban_mosquee/" + mosquee.pseudo).then(resp => {
+      console.log(resp);
       history.push({
         pathname: '/admin/consulter_mosquee',
 
       });
+
+
     }).catch(err => {
       console.log(err);
     })
 
 
 
-  };
-
-  async function banMosquee(pseudo) {
 
 
-    axios.put("http://localhost:5000/Admin/ban_mosquee/" + mosquee.pseudo).then(resp => {
-        console.log(resp);
-        history.push({
-            pathname: '/admin/consulter_mosquee',
-      
-          });
+  }
 
+  async function reactiver(e) {
 
-    }).catch(err => {
-        console.log(err);
-    })
-  
-
-
-
-
-}
-
-async function reactiver(pseudo) {
-
+    e.preventDefault();
 
     axios.put("http://localhost:5000/Admin/reactiver_mosquee/" + mosquee.pseudo).then(resp => {
-        console.log(resp);
-        history.push({
-            pathname: '/admin/consulter_mosquee',
-      
-          });
+      console.log(resp);
+      history.push({
+        pathname: '/admin/consulter_mosquee',
+
+      });
 
 
 
     }).catch(err => {
-        console.log(err);
+      console.log(err);
     })
-  
 
 
 
 
-}
+
+  }
 
 
   return (
@@ -164,7 +173,7 @@ async function reactiver(pseudo) {
                         <label> pseudo</label>
                         <Input
                           id="pseudo"
-                        defaultValue={mosquee.pseudo}
+                          defaultValue={mosquee.pseudo}
                           type="text"
                         />
                       </FormGroup>
@@ -175,7 +184,7 @@ async function reactiver(pseudo) {
                         <label htmlFor="exampleInputEmail1">
                           email
                         </label>
-                        <Input id="email"   defaultValue={mosquee.email} placeholder="Email" type="email" />
+                        <Input id="email" defaultValue={mosquee.email} placeholder="Email" type="email" />
                       </FormGroup>
                     </Col>
                   </Row>
@@ -191,7 +200,7 @@ async function reactiver(pseudo) {
                         />
                       </FormGroup>
                     </Col>
-                   
+
                     <Col className="pl-1" md="4">
                       <FormGroup>
                         <label>nom mosquee</label>
@@ -220,11 +229,11 @@ async function reactiver(pseudo) {
 
                     <Col className="pl-1" md="6">
                       <FormGroup>
-                      <label>image de mosquee</label>
+                        <label>image de mosquee</label>
 
-                        <div class="custom-file" style={{height:"38px"}} >
-                          <input type="file" class="custom-file-input" id="file" onChange={fileselect}  style={{height:"38px"}} />
-                          <label class="custom-file-label" for="file" style={{height:"38px"}} >image de mosquee</label>
+                        <div class="custom-file" style={{ height: "38px" }} >
+                          <input type="file" class="custom-file-input" id="file" onChange={fileselect} style={{ height: "38px" }} />
+                          <label class="custom-file-label" for="file" style={{ height: "38px" }} >image de mosquee</label>
                         </div>
                       </FormGroup>
                     </Col>
@@ -256,7 +265,7 @@ async function reactiver(pseudo) {
                     <Col className="pl-1" md="4">
                       <FormGroup>
                         <label>cin </label>
-                        <Input type="text" id="cin"  defaultValue={mosquee.cin} placeholder="cin" />
+                        <Input type="text" id="cin" defaultValue={mosquee.cin} placeholder="cin" />
                       </FormGroup>
                     </Col>
                   </Row>
@@ -264,25 +273,25 @@ async function reactiver(pseudo) {
                   <Row>
                     <div className="update ml-auto mr-auto">
                       <a href="#" onClick={update_mosquee} className="btn btn-lg  btn-block  text-uppercase font-weight-bold mb-2" style={{ backgroundColor: "#FFC312" }}>
-                        modifier
+                        enregistrer
                       </a>
                     </div>
-                    { desactiver && (
-                          <div className="update ml-auto mr-auto">
-                          <a href="#"  onClick={banMosquee} className="btn btn-lg  btn-block  text-uppercase font-weight-bold mb-2" style={{ backgroundColor: "#FFC312" }}>
+                    {desactiver && (
+                      <div className="update ml-auto mr-auto">
+                        <a href="#" onClick={banMosquee} className="btn btn-lg  btn-block  text-uppercase font-weight-bold mb-2" style={{ backgroundColor: "#FFC312" }}>
                           desactiver
-                          </a>
-                        </div>
-                          
-                      )}  
-                      { activer &&(
-                          <div className="update ml-auto mr-auto">
-                          <a href="#"  onClick={reactiver} className="btn btn-lg  btn-block  text-uppercase font-weight-bold mb-2" style={{ backgroundColor: "#FFC312" }}>
+                        </a>
+                      </div>
+
+                    )}
+                    {activer && (
+                      <div className="update ml-auto mr-auto">
+                        <a href="#" onClick={reactiver} className="btn btn-lg  btn-block  text-uppercase font-weight-bold mb-2" style={{ backgroundColor: "#FFC312" }}>
                           reactiver
-                          </a>
-                        </div>
-                          
-                      )}  
+                        </a>
+                      </div>
+
+                    )}
 
                   </Row>
                 </Form>

@@ -16,7 +16,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React , { useEffect, useState, useContext }from "react";
 
 // reactstrap components
 import {
@@ -32,13 +32,17 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import { validate } from 'email-validator';
+
 import axios from 'axios';
+import GetCookie from "./cookies";
 import { useHistory } from "react-router-dom";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 
 function User() {
   let mosqueepicture="null";
+  const history = useHistory();
 
   function fileselect(event) {
 
@@ -57,8 +61,13 @@ function User() {
 
 
 
-}
-  const history = useHistory();
+}  
+let [Admincheck, setAdminCheck] = useState(false);
+let [passwordcheck, setpasswordCheck] = useState(false);
+let [mosqueecheck, setmosqueeCheck] = useState(false);
+let [pseudocheck, setpseudoCheck] = useState(false);
+
+
   const villes = ['Paris', 'Nice', 'Bordeaux', 'Lyon', 'Marseille', 'Toulouse', 'Lille', 'Nantes', 'Strasbourg', 'Monpellier',
     'Rennes', 'Angers', 'Dijon', 'Grenoble', 'Saint-Etienne', 'Brest', 'Le Havre', 'Reims', 'Caen', 'Metz'
     , 'Toulon', 'Aix-en-Provence', 'Nimes', 'Tours', 'Nancy', 'Rouen', 'Clermont-Ferrand', 'Le Mans',
@@ -79,20 +88,98 @@ function User() {
       numero_telephone :document.getElementById("numero").value,
     }
     const config = { Headers: { "content-type": "application/json" } };
-    axios.post("http://localhost:5000/Admin/add_user", request, config).then(resp => {
+    if(Admincheck===false && passwordcheck===true && mosqueecheck===false && pseudocheck===false){
+    axios.post("http://localhost:5000/Admin/add_user", request).then(resp => {
       history.push({
-        pathname: 'admin/list_admin',
+        pathname: 'list_admin',
 
       });
     }).catch(err => {
       console.log(err);
     })
-
+  }else {
+    alert("quelque chose ne va pas s'il vous plaît vérifier vos informations")
+  }
 
 
   };
+  async function emailVerif(e){
+  axios.get("http://localhost:5000/Admin/" + e.target.value).then(resp => {
+   if (resp.data.length>0){
+
+    document.getElementById("emailVerifie").innerText=" email est deja existe"
+    document.getElementById("emailVerifie").style.color="red"
+    setAdminCheck(true);
+   }else{
+    setAdminCheck(false);
+
+   }
+  }).catch(err => {
+    console.log(err);
+  })
+
+  if(!validate(e.target.value)    ){
+    document.getElementById("emailVerifie").innerText="invalide format email"
+    document.getElementById("emailVerifie").style.color="red"
+
+  }else{
+    document.getElementById("emailVerifie").innerText=" valide"
+    document.getElementById("emailVerifie").style.color="green"
+
+  }
+  
+
+}
+async  function passwordCheck(e){
+  if(e.target.value.length<8){
+    document.getElementById("passowrdVerifie").innerText="la longueur du mot de passe doit être supérieure à 8"
+    document.getElementById("passowrdVerifie").style.color="red"
+    setpasswordCheck(false)
+
+  }else{
+    document.getElementById("passowrdVerifie").innerText="valide"
+    document.getElementById("passowrdVerifie").style.color="green"
+    setpasswordCheck(true)
 
 
+  }
+}
+ function nomMosqueeCheck(e){
+  axios.get("http://localhost:5000/Admin/nom_mosque/" + e.target.value).then(resp => {
+    if (resp.data.length>0){
+ 
+     document.getElementById("mosqueeVerifie").innerText=" mosquee est deja existe"
+     document.getElementById("mosqueeVerifie").style.color="red"
+     setmosqueeCheck(true);
+    }else{
+      document.getElementById("mosqueeVerifie").innerText="valide"
+    document.getElementById("mosqueeVerifie").style.color="green"
+      setmosqueeCheck(false)
+    }
+   }).catch(err => {
+     console.log(err);
+   })
+
+   
+ 
+}
+async function pseudoVerif(e){
+  axios.get("http://localhost:5000/Admin/pseudo/" + e.target.value).then(resp => {
+    if (resp.data.length>0){
+ 
+     document.getElementById("pseudoVerifie").innerText=" pseudo est deja existe"
+     document.getElementById("pseudoVerifie").style.color="red"
+     setpseudoCheck(true);
+    }else{
+      document.getElementById("pseudoVerifie").innerText="valide"
+    document.getElementById("pseudoVerifie").style.color="green"
+    setpseudoCheck(false)
+    }
+   }).catch(err => {
+     console.log(err);
+   })
+
+}
 
 
   return (
@@ -115,7 +202,11 @@ function User() {
                           id="pseudo"
                           placeholder="pseudo"
                           type="text"
+                          onChange={pseudoVerif}
                         />
+                        <label id="pseudoVerifie"  htmlFor="exampleInputEmail1">
+                          
+                          </label>
                       </FormGroup>
                     </Col>
 
@@ -124,7 +215,10 @@ function User() {
                         <label htmlFor="exampleInputEmail1">
                           email
                         </label>
-                        <Input id="email" placeholder="Email" type="email" />
+                        <Input id="email" onChange={emailVerif} placeholder="Email" type="email" />
+                        <label id="emailVerifie"  htmlFor="exampleInputEmail1">
+                          
+                        </label>
                       </FormGroup>
                     </Col>
                   </Row>
@@ -136,7 +230,11 @@ function User() {
                           placeholder="mot de passe"
                           id="mot_de_passe"
                           type="text"
+                          onChange={passwordCheck}
                         />
+                        <label id="passowrdVerifie"  htmlFor="exampleInputEmail1">
+                          
+                          </label>
                       </FormGroup>
                     </Col>
                     <Col className="pr-1" md="4">
@@ -156,7 +254,11 @@ function User() {
                           placeholder="nom mosquee"
                           id="nom_mosquee"
                           type="text"
+                          onChange={nomMosqueeCheck}
                         />
+                          <label id="mosqueeVerifie"  htmlFor="exampleInputEmail1">
+                          
+                          </label>
                       </FormGroup>
                     </Col>
                   </Row>
@@ -216,7 +318,7 @@ function User() {
 
                   <Row>
                     <div className="update ml-auto mr-auto">
-                      <a href="#" onClick={adduser} className="btn btn-lg  btn-block  text-uppercase font-weight-bold mb-2" style={{ backgroundColor: "#FFC312" }}>
+                      <a href="#" onClick={adduser}   className="btn btn-lg  btn-block  text-uppercase font-weight-bold mb-2" style={{ backgroundColor: "#FFC312" }}>
                         ajouter
                       </a>
                     </div>

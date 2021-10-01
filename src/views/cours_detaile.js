@@ -34,12 +34,12 @@ import axios from 'axios';
 import Reservation from "./Reservation";
 // core components
 import { useHistory } from "react-router-dom";
-
+import GetCookie from "./cookies";
 
 function Cours_details(props) {
 
   const history = useHistory();
-
+ 
   console.log(props.location.state)
   let cour = props.location.state;
   let nbr_condidats = cour.condidats.length
@@ -55,6 +55,9 @@ function Cours_details(props) {
 
   const deleteCours = () => {
     console.log(cour.condidats)
+    var r = window.confirm("Etes vous sur de vouloir supprimer!");
+    console.log(r)
+    if (r == true) {
     cour.condidats.map((item) =>
 
 
@@ -78,15 +81,24 @@ function Cours_details(props) {
       state: cour // your data array of objects
     });
 
+  }
 
-
+  }
+  async function goToUpdateCours() {
+    history.push({
+      pathname: '/admin/Modifier_cours',
+      state: cour
+    });
   }
   return (
     <>
 
-      <center><h4>cours detaile</h4></center>
+      <center><h4>cours detaille</h4></center>
       <div className="d-flex justify-content-center container mt-5">
         <div className="card_offre_detaile p-3 bg-white"><i className="fa fa-apple"></i>
+        <div className="float-right">
+            <i className="nc-icon nc-settings-gear-65  " onClick={goToUpdateCours} />
+          </div>
           <div className="about-product text-center mt-2"><img src={cour.pictureName} width="600" />
             <div>
               <h4>{cour.nom_mosquee}</h4>
@@ -94,11 +106,11 @@ function Cours_details(props) {
             </div>
           </div>
           <div className="stats mt-2">
-            <div className="d-flex justify-content-between p-price"><span>nom cour</span><span>{cour.nom_cours}</span></div>
+            <div className="d-flex justify-content-between p-price"><span>nom de cour</span><span>{cour.nom_cours}</span></div>
 
-            <div className="d-flex justify-content-between p-price"><span>date debut</span><span>{cour.date_debut}</span></div>
-            <div className="d-flex justify-content-between p-price"><span>date fin</span><span>{cour.date_fin}</span></div>
-            <div className="d-flex justify-content-between p-price"><span>mail admin</span><span>{cour.mail_admin}</span></div>
+            <div className="d-flex justify-content-between p-price"><span>date début de cours</span><span>{cour.date_debut}</span></div>
+            <div className="d-flex justify-content-between p-price"><span>date fin de cours</span><span>{cour.date_fin}</span></div>
+            <div className="d-flex justify-content-between p-price"><span>e-mail de l'administrateur</span><span>{cour.mail_admin}</span></div>
             <div className="d-flex justify-content-between p-price"><span>description :</span><span>{cour.description}</span></div>
 
 

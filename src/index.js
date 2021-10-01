@@ -28,7 +28,7 @@ import Offre_detaile from "views/offre_detaile";
 
 import AdminLayout from "layouts/Admin.js";
 import Login from "views/login";
-import Edit_Profil from "views/edit_admin";
+import Reset from "views/reset";
 let rot =document.getElementById("root");
 console.log(rot)
 ReactDOM.render(
@@ -38,6 +38,8 @@ ReactDOM.render(
       <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
    
       <Route path="/login" render={(props) => <Login {...props} />} />
+      <Route path="/reset" render={(props) => <Reset {...props} />} />
+
       <Route path="/offre_detaile" render={(props) => <Offre_detaile {...props} />} />
     </Switch>
     </main>

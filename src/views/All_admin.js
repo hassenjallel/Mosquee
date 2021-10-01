@@ -28,15 +28,17 @@ import {
   Table,
   Row,
   Col,
+  Input
 } from "reactstrap";
 import axios from 'axios';
 import { useHistory } from "react-router-dom";
-
+import GetCookie from "./cookies";
 function All_admin() {
-
-  let [alladmin, setAlladmin] = useState([]);
   const history = useHistory();
 
+
+  let [alladmin, setAlladmin] = useState([]);
+const [search , setSerach]=useState('')
   useEffect(() => {
     const getallAdmin = async () => {
 
@@ -115,7 +117,6 @@ console.log(pseudo)
 
 
     }).catch(err => {
-        console.log(err);
     })
   
 
@@ -123,6 +124,9 @@ console.log(pseudo)
 
 
 }
+const filtredAdmins = alladmin.filter(admin=>{
+  return admin.pseudo.toLowerCase().includes(search.toLowerCase())
+})
   return (
     <>
       <div className="content">
@@ -131,6 +135,7 @@ console.log(pseudo)
             <Card>
               <CardHeader>
                 <center>     <CardTitle tag="h4"> consulter  tous les admins</CardTitle>  </center>
+                        <center><Input onChange={e=>setSerach(e.target.value)} placeholder="chercher avec pseudo" style={{width:"300px"}}/></center>
               </CardHeader>
               <CardBody>
                 <Table responsive>
@@ -143,11 +148,11 @@ console.log(pseudo)
                       <th>prenom</th>
                       <th>cin</th>
                       <th>supprimer</th>
-                      <th></th>
+                      <th>desactiver/reactiver</th>
 
                     </tr>
                   </thead>
-                  {alladmin.map((item) =>
+                  {filtredAdmins.map((item) =>
                     <tbody>
                       <tr>
                         <td>{item.pseudo}</td>

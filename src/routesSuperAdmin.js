@@ -36,7 +36,8 @@ import Mosquee_details from "views/mosquee_detail";
 import Update_mosquee from "views/modifier_mosquee";
 import Modifier_offre from "views/modifier_offre";
 import Modifier_cours from "views/modifier_cours";
-  var routesAdmin = [
+var routesSuperAdmin = [
+
     {
       path: "/profil",
       name: "profil",
@@ -44,58 +45,48 @@ import Modifier_cours from "views/modifier_cours";
       component: profil,
       layout: "/admin",
     },
-  
+   
 
+    
     {
-      path: "/ajouter_offre",
-      name: "ajouter offer",
-      icon: "nc-icon nc-simple-add",
-      component: Ajouteroffre,
+      path: "/consulter_mosquee",
+      name: "consulter mosquee",
+      icon: "far fa-eye",
+      component: Consulter_mosquee,
       layout: "/admin",
     },
     {
-      path: "/ajouter_cours",
-      name: "ajouter cours",
-      icon: "nc-icon nc-simple-add",
-      component: Ajoutercours,
+      path: "/list_admin",
+      name: "consulter admin",
+      icon: "far fa-eye",
+      component: List_admin,
+      layout: "/admin",
+    },
+    {
+      path: "/addUser",
+      name: "ajouter admin",
+      icon: "fas fa-user-plus",
+      component: Add_user,
       layout: "/admin",
     },
 
-    {
-      path: "/consulter_cours",
-      name: "consulter_cours",
-      icon: "nc-icon nc-bank",
-      component: consulter_cours,
-      layout: "/admin",
-    },
-
-    {
-      path: "/consulter_offres",
-      name: "consulter offres",
-      icon: "nc-icon nc-bank",
-      component: consulter_offres,
-      layout: "/admin",
-    },
+    
+   
  
+  
     {
       path: "login",
       name: "deconnexion",
       icon: "fas fa-sign-out-alt",
       component: LogOut,
       layout: "/",
+
     },
 
     {
       path: "/edit_profil",
       name: "",
       component: edit_profil,
-      layout: "/admin",
-    },
-
-    {
-      path: "/cours-detaile",
-      name: "",
-      component: cours_detaile,
       layout: "/admin",
     },
     {
@@ -111,6 +102,24 @@ import Modifier_cours from "views/modifier_cours";
       layout: "/admin",
     },
     {
+      path: "/cours-detaile",
+      name: "",
+      component: cours_detaile,
+      layout: "/admin",
+    },
+    {
+      path: "/mosquee-detail",
+      name: "",
+      component: Mosquee_details,
+      layout: "/admin",
+    },
+    {
+      path: "/update_mosquee",
+      name: "",
+      component: Update_mosquee,
+      layout: "/admin",
+    },
+    {
       path: "/Modifier_offre",
       name: "",
       component: Modifier_offre,
@@ -122,8 +131,6 @@ import Modifier_cours from "views/modifier_cours";
       component: Modifier_cours,
       layout: "/admin",
     },
-
   ];
- 
 
-export default routesAdmin;
+export default routesSuperAdmin;

@@ -16,7 +16,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React,{useState} from "react";
 
 // reactstrap components
 import {
@@ -34,13 +34,15 @@ import {
 } from "reactstrap";
 import axios from 'axios';
 import { useHistory } from "react-router-dom";
-
+import GetCookie from "./cookies";
 const Ajouter_offre = () => {
   const history = useHistory();
-
-  let offrepicture = "null";
+ 
+  let offrepicture = "";
   let nom_mosquee = localStorage.getItem("nom_mosquee");
   console.log(nom_mosquee)
+  let [nomOffreCheck, setNomOffreCheck] = useState();
+
   function fileselect(event) {
 
     const fileList = event.target.files;
@@ -60,7 +62,8 @@ const Ajouter_offre = () => {
 
   }
 
-  function ajouter_un_offre() {
+  function ajouter_un_offre(e) {
+    e.preventDefault();
     let request = {
       nom_offre: document.getElementById("nom_offre").value,
       description: document.getElementById("description").value,
@@ -75,14 +78,37 @@ const Ajouter_offre = () => {
       ville:localStorage.getItem("ville"),
     }
     console.log(request);
+    if((nomOffreCheck===false) && (request.date_debut !=="") && (request.date_fin!=="") && (request.nbr_personnes!=="")&& (request.prix!=="") && (request.description!=="")&& (request.imagename!=="")){
     axios.post("http://localhost:5000/offre/", request).then(resp => {
       history.push({
-        pathname: 'admin/consulter_offres',
+        pathname: '/admin/consulter_offres',
   
       });
     }).catch(err => {
       console.log(err);
-    })
+    })}else{
+      alert("quelque chose ne va pas s'il vous plaît vérifier vos informations")
+    }
+  }
+  async function Nom_offreVerif(e){
+    axios.get("http://localhost:5000/offre/getoffrebyname/" + e.target.value).then(resp => {
+      console.log(resp.data )
+
+      if (resp.data=="mawjoud"){
+        console.log("mawjoud")
+       document.getElementById("NomOffreVerifie").innerText=" nom offre est deja existe"
+       document.getElementById("NomOffreVerifie").style.color="red"
+       setNomOffreCheck(true);
+      }else{
+        console.log("hah")
+        document.getElementById("NomOffreVerifie").innerText="valide"
+      document.getElementById("NomOffreVerifie").style.color="green"
+      setNomOffreCheck(false)
+      }
+     }).catch(err => {
+       console.log(err);
+     })
+  
   }
   return (
     <>
@@ -99,17 +125,22 @@ const Ajouter_offre = () => {
                   <Row>
                     <Col className="pr-1" md="5">
                       <FormGroup>
-                        <label> nom offre</label>
+                        <label> nom de l'offre</label>
                         <Input
                           id="nom_offre"
                           placeholder="nom offre"
                           type="text"
+                          onChange={Nom_offreVerif}
+
                         />
+                            <label id="NomOffreVerifie"  htmlFor="exampleInputEmail1">
+                          
+                          </label>
                       </FormGroup>
                     </Col>
                     <Col className="px-1" md="3">
                       <FormGroup>
-                        <label>type</label>
+                        <label>type de l'offre</label>
                         <select name="type_offre" id="type_offres" style={{ width: "100%", height: "35px", borderRadius: "4px", position: "relative", backgroundColor: "rgba(255,255,255,0.3)", transition: "0.3s all" }}>
                           <option value="haja" selected="selected">haja</option>
                           <option value="omra">omra</option>
@@ -120,7 +151,7 @@ const Ajouter_offre = () => {
                     <Col className="pl-1" md="4">
                       <FormGroup>
                         <label htmlFor="exampleInputEmail1">
-                          mail_admin
+                        e-mail de l'administrateur
                         </label>
                         <Input id="mail_admin" placeholder="Email" value={localStorage.getItem("email")} type="email" />
                       </FormGroup>
@@ -129,7 +160,7 @@ const Ajouter_offre = () => {
                   <Row>
                     <Col className="pr-1" md="6">
                       <FormGroup>
-                        <label>date_debut</label>
+                        <label>Date de départ</label>
                         <Input
                           id="date_debut"
                           type="date"
@@ -138,7 +169,7 @@ const Ajouter_offre = () => {
                     </Col>
                     <Col className="pl-1" md="6">
                       <FormGroup>
-                        <label>date fin</label>
+                        <label> date d'arrivée</label>
                         <Input
                           id="date_fin"
                           type="date"
@@ -159,7 +190,7 @@ const Ajouter_offre = () => {
                     </Col>
                     <Col className="px-1" md="3">
                       <FormGroup>
-                        <label>nom mosquee</label>
+                        <label>nom de mosquée</label>
                         <Input
                           id="nom_mosquee"
                           value={ nom_mosquee }
@@ -169,7 +200,7 @@ const Ajouter_offre = () => {
                     </Col>
                     <Col className="px-1" md="3">
                       <FormGroup>
-                        <label>prix</label>
+                        <label>prix d'offre</label>
                         <Input
                           id="prix"
                           placeholder="prix"

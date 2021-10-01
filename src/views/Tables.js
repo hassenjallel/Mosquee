@@ -28,8 +28,12 @@ import {
   Row,
   Col,
 } from "reactstrap";
-
+import GetCookie from "./cookies";
+import { useHistory } from "react-router-dom";
 function Tables() {
+  const history = useHistory();
+
+
   return (
     <>
       <div className="content">
@@ -38,6 +42,7 @@ function Tables() {
             <Card>
               <CardHeader>
               <center>  <CardTitle tag="h4">All Reservation</CardTitle>  </center>
+              
               </CardHeader>
               <CardBody>
                 <Table responsive>

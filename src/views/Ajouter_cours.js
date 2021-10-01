@@ -16,7 +16,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React , {useState} from "react";
 
 // reactstrap components
 import {
@@ -35,12 +35,14 @@ import {
 import axios from 'axios';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { useHistory } from "react-router-dom";
-
+import GetCookie from "./cookies";
 const Ajouter_cours=()=> {
   const history = useHistory();
-
+ 
   let offrepicture="null";
   let nom_mosquee= localStorage.getItem("nom_mosquee");
+  let [nomCoursCheck, setNomCoursCheck] = useState();
+
   console.log(nom_mosquee)
   function fileselect(event) {
 
@@ -61,8 +63,9 @@ const Ajouter_cours=()=> {
 
 }
 
-function ajouter_un_cours() {
-        alert("dkhalet lel fonction");
+function ajouter_un_cours(e) {
+  e.preventDefault();
+
   let request = {
       nom_cours:document.getElementById("nom_cours").value,
       description:document.getElementById("description").value,
@@ -76,15 +79,42 @@ function ajouter_un_cours() {
 
   }
   console.log(request);
+  if(nomCoursCheck===false && request.description!=="" && request.imagename!=="" && request.nbr_personnes!=="" && request.date_debut!=="" && request.date_fin!==""){
+
   axios.post("http://localhost:5000/cours/", request ).then(resp => {
             alert("le cours est bien ajouter")
             history.push({
-              pathname: 'admin/consulter_cours',
+              pathname: '/admin/consulter_cours',
         
             });
         }).catch(err => {
             console.log(err);
         })
+      }else{
+        alert("quelque chose ne va pas s'il vous plaît vérifier vos informations")
+
+
+      }
+}
+async function Nom_CoursVerif(e){
+  axios.get("http://localhost:5000/cours/getcoursbyname/" + e.target.value).then(resp => {
+    console.log(resp.data )
+
+    if (resp.data=="mawjoud"){
+      console.log("mawjoud")
+     document.getElementById("NomCoursVerifie").innerText=" nom offre est deja existe"
+     document.getElementById("NomCoursVerifie").style.color="red"
+     setNomCoursCheck(true);
+    }else{
+      console.log("hah")
+      document.getElementById("NomCoursVerifie").innerText="valide"
+    document.getElementById("NomCoursVerifie").style.color="green"
+    setNomCoursCheck(false)
+    }
+   }).catch(err => {
+     console.log(err);
+   })
+
 }
   return (
     <>
@@ -101,19 +131,23 @@ function ajouter_un_cours() {
                   <Row>
                     <Col className="pr-1" md="6">
                       <FormGroup>
-                        <label> nom cours</label>
+                        <label> nom de cours</label>
                         <Input
                           id="nom_cours"
                           placeholder="nom cours"
                           type="text"
+                          onChange={Nom_CoursVerif}
                         />
+                          <label id="NomCoursVerifie"  htmlFor="exampleInputEmail1">
+                          
+                          </label>
                       </FormGroup>
                     </Col>
                     
                     <Col className="pl-1" md="6">
                       <FormGroup>
                         <label htmlFor="exampleInputEmail1">
-                          mail_admin
+                        e-mail de l'administrateur
                         </label>
                         <Input id="mail_admin" defaultValue={localStorage.getItem("email")} placeholder="Email" type="email" />
                       </FormGroup>
@@ -122,7 +156,7 @@ function ajouter_un_cours() {
                   <Row>
                     <Col className="pr-1" md="6">
                       <FormGroup>
-                        <label>date_debut</label>
+                        <label>date début de cours</label>
                         <Input
                           id="date_debut"
                           type="date"
@@ -131,7 +165,7 @@ function ajouter_un_cours() {
                     </Col>
                     <Col className="pl-1" md="6">
                       <FormGroup>
-                        <label>date fin</label>
+                        <label>date fin de cours</label>
                         <Input
                          id="date_fin"
                           type="date"
@@ -152,7 +186,7 @@ function ajouter_un_cours() {
                     </Col>
                     <Col className="px-1" md="4">
                       <FormGroup>
-                        <label>nom mosquee</label>
+                        <label>nom de mosquee</label>
                         <Input
                         id="nom_mosquee"
                         value={nom_mosquee}

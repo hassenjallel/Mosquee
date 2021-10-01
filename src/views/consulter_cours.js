@@ -44,7 +44,11 @@ import {
 } from "variables/charts.js";
 import { useHistory } from "react-router-dom";
 import "./consulter_cours.css"
+import GetCookie from "./cookies";
 const  Consulter_all_cours  = (props) => {
+  const history = useHistory();
+
+ 
   let [allcours, setAllcours] = useState([]);
   let type = localStorage.getItem("type");
   let [allville, setAllville] = useState([]);
@@ -89,7 +93,6 @@ console.log(nom_mosq);
 
   })
 
-  const history = useHistory();
 
   const coursDetails = (item) => {
     history.push({
@@ -103,8 +106,7 @@ console.log(nom_mosq);
  
   return (
     <>
-    <center><h4>Consulter all cours</h4></center>
-      <div className="content">
+      <div >
         
        
         {display && (
@@ -122,8 +124,8 @@ console.log(nom_mosq);
                   </div>
                 </div>
                 <div className="stats mt-2">
-                  <div className="d-flex justify-content-between p-price"><span>date debut</span><span>{item.date_debut}</span></div>
-                  <div className="d-flex justify-content-between p-price"><span>date fin</span><span>{item.date_fin}</span></div>
+                  <div className="d-flex justify-content-between p-price"><span>date début de cours</span><span>{item.date_debut}</span></div>
+                  <div className="d-flex justify-content-between p-price"><span>date fin de cours</span><span>{item.date_fin}</span></div>
 
 
 
@@ -136,7 +138,7 @@ console.log(nom_mosq);
                     type="submit"
                     onClick={()=>coursDetails(item)}
                   >
-                    detaile
+                    détails
                   </Button></span></div></center>
               </div>
             </div>
